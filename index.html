@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro Fotográfico - Vuelve a Casa</title>
+  <link rel="stylesheet" href="Estilos/globals.css">
+  <link rel="stylesheet" href="Estilos/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-content">
+        <div class="event-title">Vuelve a Casa</div>
+        <div class="subtitle">"Los brazos del Padre te esperan"</div>
+        <div class="bible-verse">San Lucas 15:18</div>
+        <h1>Registro Fotográfico</h1>
+        <p>Comparte las mejores imágenes del evento Vuelve a Casa</p>
+      </div>
+    </header>
+
+    <form id="photoForm" class="form">
+      <!-- Información del Líder -->
+      <div class="form-section">
+        <h2>Información del Líder</h2>
+        
+        <div class="form-group">
+          <label for="lider">Nombre del Líder de Zona</label>
+          <input type="text" id="lider" name="lider" required placeholder="Nombre completo del líder">
+        </div>
+
+        <div class="form-group">
+          <label for="zona">Zona</label>
+          <input type="text" id="zona" name="zona" required placeholder="Nombre de la zona">
+        </div>
+      </div>
+
+      <!-- Registro Fotográfico -->
+      <div class="form-section">
+        <h2>Registro Fotográfico</h2>
+        <p class="section-description">Selecciona las imágenes del evento. Puedes subir múltiples fotos a la vez.</p>
+        
+        <div class="upload-area" id="uploadArea">
+          <div class="upload-content">
+            <div class="upload-icon">📸</div>
+            <h3>Arrastra las imágenes aquí</h3>
+            <p>o haz clic para seleccionar archivos</p>
+            <input type="file" id="imageInput" multiple accept="image/*" hidden>
+            <button type="button" class="btn-upload" onclick="document.getElementById('imageInput').click()">
+              Seleccionar Imágenes
+            </button>
+          </div>
+        </div>
+
+        <div class="upload-info">
+          <p><strong>Formatos aceptados:</strong> JPG, PNG, WEBP</p>
+          <p><strong>Tamaño máximo:</strong> 5MB por imagen</p>
+          <p><strong>Cantidad máxima:</strong> 20 imágenes</p>
+        </div>
+
+        <!-- Preview de imágenes -->
+        <div id="imagePreview" class="image-preview"></div>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="form-actions">
+        <button type="button" id="clearBtn" class="btn-secondary">Limpiar Todo</button>
+        <button type="submit" class="btn-primary">Enviar Registro Fotográfico</button>
+      </div>
+    </form>
+
+    <!-- Modal de Confirmación -->
+    <div id="successModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>¡Registro Exitoso!</h3>
+        </div>
+        <div class="modal-body">
+          <div class="success-icon">✅</div>
+          <p>Las imágenes han sido enviadas correctamente.</p>
+          <p>Gracias por compartir los momentos especiales del evento.</p>
+          <div id="folderLink" class="folder-link"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-primary" id="newForm">Nuevo Registro</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Carga -->
+    <div id="loadingModal" class="modal">
+      <div class="modal-content loading-content">
+        <div class="loading-spinner"></div>
+        <h3>Subiendo imágenes...</h3>
+        <p>Por favor espera mientras procesamos las imágenes</p>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p id="progressText">0%</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="Java/script.js"></script>
+</body>
+</html>
