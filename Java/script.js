@@ -7,8 +7,8 @@ class PhotoFormManager {
     this.successModal = document.getElementById('successModal');
     this.loadingModal = document.getElementById('loadingModal');
     
-    // PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT CUANDO LA GENERES
-    this.SCRIPT_URL = 'TU_NUEVA_URL_DE_APPS_SCRIPT_AQUI'; 
+    // AQUÍ ESTÁ TU URL EXACTA
+    this.SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyga7Ipyxst79VKSsO2M46CXuZNqI-5vzgx9U06XHSIDdMgkNIXGV95UzHI5VPhq8K/exec'; 
     
     this.selectedImages = [];
     this.maxImages = 20;
