@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro Fotográfico - Vuelve a Casa</title>
+  <title>Registro Fotográfico JUVICAM</title>
   <link rel="stylesheet" href="Estilos/globals.css">
   <link rel="stylesheet" href="Estilos/styles.css">
 </head>
@@ -14,8 +14,8 @@
         <div class="event-title">Vuelve a Casa</div>
         <div class="subtitle">"Los brazos del Padre te esperan"</div>
         <div class="bible-verse">San Lucas 15:18</div>
-        <h1>Registro Fotográfico</h1>
-        <p>Comparte las mejores imágenes del evento Vuelve a Casa</p>
+        <h1>Registro Fotográfico JUVICAM</h1>
+        <p>Comparte las mejores imágenes del evento</p>
       </div>
     </header>
 
@@ -30,8 +30,8 @@
         </div>
 
         <div class="form-group">
-          <label for="zona">Zona</label>
-          <input type="text" id="zona" name="zona" required placeholder="Nombre de la zona">
+          <label for="zona">Número de zona</label>
+          <input type="text" id="zona" name="zona" required placeholder="Ej: 1, 2, 3...">
         </div>
       </div>
 
@@ -77,7 +77,7 @@
         </div>
         <div class="modal-body">
           <div class="success-icon">✅</div>
-          <p>Las imágenes han sido enviadas correctamente.</p>
+          <p>Las imágenes han sido enviadas correctamente a la nube.</p>
           <p>Gracias por compartir los momentos especiales del evento.</p>
           <div id="folderLink" class="folder-link"></div>
         </div>
@@ -92,11 +92,11 @@
       <div class="modal-content loading-content">
         <div class="loading-spinner"></div>
         <h3>Subiendo imágenes...</h3>
-        <p>Por favor espera mientras procesamos las imágenes</p>
+        <p>Por favor espera, este proceso puede tardar dependiendo de tu internet.</p>
         <div class="progress-bar">
           <div class="progress-fill" id="progressFill"></div>
         </div>
-        <p id="progressText">0%</p>
+        <p id="progressText">Procesando...</p>
       </div>
     </div>
   </div>
