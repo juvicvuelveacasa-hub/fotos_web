@@ -1,106 +1,193 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro Fotográfico JUVICAM</title>
-  <link rel="stylesheet" href="Estilos/globals.css">
-  <link rel="stylesheet" href="Estilos/styles.css">
-</head>
-<body>
-  <div class="container">
-    <header class="header">
-      <div class="header-content">
-        <div class="event-title">Vuelve a Casa</div>
-        <div class="subtitle">"Los brazos del Padre te esperan"</div>
-        <div class="bible-verse">San Lucas 15:18</div>
-        <h1>Registro Fotográfico JUVICAM</h1>
-        <p>Comparte las mejores imágenes del evento</p>
-      </div>
-    </header>
-
-    <form id="photoForm" class="form">
-      <!-- Información del Líder -->
-      <div class="form-section">
-        <h2>Información del Líder</h2>
-        
-        <div class="form-group">
-          <label for="lider">Nombre del Líder de Zona</label>
-          <input type="text" id="lider" name="lider" required placeholder="Nombre completo del líder">
-        </div>
+<!-- index.html -->
+<!-- ... Busca esta parte dentro del formulario y reemplázala ... -->
 
         <div class="form-group">
           <label for="zona">Número de zona</label>
-          <input type="text" id="zona" name="zona" required placeholder="Ej: 1, 2, 3...">
+          <!-- ARREGLO: Cambiado a type="number" y añadida validación -->
+          <input type="number" id="zona" name="zona" required placeholder="Ej: 1, 2, 3..." inputmode="numeric" min="1">
         </div>
       </div>
 
       <!-- Registro Fotográfico -->
       <div class="form-section">
-        <h2>Registro Fotográfico</h2>
-        <p class="section-description">Selecciona las imágenes del evento. Puedes subir múltiples fotos a la vez.</p>
-        
-        <div class="upload-area" id="uploadArea">
-          <div class="upload-content">
-            <div class="upload-icon">📸</div>
-            <h3>Arrastra las imágenes aquí</h3>
-            <p>o haz clic para seleccionar archivos</p>
-            <input type="file" id="imageInput" multiple accept="image/*" hidden>
-            <button type="button" class="btn-upload" onclick="document.getElementById('imageInput').click()">
-              Seleccionar Imágenes
-            </button>
+        <h2>Registro Fotográfico<script>
+class PhotoFormManager {
+  constructor() {
+    this.form = document.getElementById('photoForm');
+    this.imageInput = document.getElementById('imageInput');
+    this.uploadArea = document.getElementById('uploadArea');
+    this.imagePreview = document.getElementById('imagePreview');
+    this.successModal = document.getElementById('successModal');
+    this.loadingModal = document.getElementById('loadingModal');
+    
+    // PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT CUANDO LA GENERES
+    this.SCRIPT_URL = 'TU_NUEVA_URL_DE_APPS_SCRIPT_AQUI'; 
+    
+    this.selectedImages = [];
+    this.maxImages = 20;
+    this.maxFileSize = 5 * 1024 * 1024; // 5MB
+    
+    this.initializeEventListeners();
+  }
+
+  initializeEventListeners() {
+    this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+    this.imageInput.addEventListener('change', (e) => this.handleFileSelect(e));
+    this.uploadArea.addEventListener('dragover', (e) => this.handleDragOver(e));
+    this.uploadArea.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+    this.uploadArea.addEventListener('drop', (e) => this.handleDrop(e));
+    this.uploadArea.addEventListener('click', () => this.imageInput.click());
+    
+    document.getElementById('clearBtn').addEventListener('click', () => this.clearAll());
+    document.getElementById('newForm').addEventListener('click', () => location.reload());
+  }
+
+  handleDragOver(e) { e.preventDefault(); this.uploadArea.classList.add('drag-over'); }
+  handleDragLeave(e) { e.preventDefault(); this.uploadArea.classList.remove('drag-over'); }
+  handleDrop(e) {
+    e.preventDefault();
+    this.uploadArea.classList.remove('drag-over');
+    this.processFiles(Array.from(e.dataTransfer.files));
+  }
+  handleFileSelect(e) { this.processFiles(Array.from(e.target.files)); }
+
+  processFiles(files) {
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    if (imageFiles.length === 0) { alert('Por favor selecciona solo archivos de imagen'); return; }
+    if (this.selectedImages.length + imageFiles.length > this.maxImages) { alert(`Máximo ${this.maxImages} imágenes permitidas`); return; }
+
+    imageFiles.forEach(file => {
+      if (file.size > this.maxFileSize) { alert(`La imagen ${file.name} es muy grande (máximo 5MB)`); return; }
+      this.addImage(file);
+    });
+  }
+
+  addImage(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.selectedImages.push({
+        file: file,
+        data: e.target.result,
+        type: file.type,
+        name: file.name
+      });
+      this.renderImagePreview();
+      this.updateUploadArea();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  renderImagePreview() {
+    this.imagePreview.innerHTML = '';
+    if (this.selectedImages.length === 0) return;
+
+    const header = document.createElement('h3');
+    header.textContent = `Imágenes seleccionadas (${this.selectedImages.length})`;
+    this.imagePreview.appendChild(header);
+
+    const grid = document.createElement('div');
+    grid.className = 'image-grid';
+
+    this.selectedImages.forEach((image, index) => {
+      grid.innerHTML += `
+        <div class="image-card">
+          <div class="image-wrapper">
+            <img src="${image.data}" alt="${image.name}">
+            <button type="button" class="remove-btn" onclick="photoManager.removeImage(${index})">×</button>
           </div>
-        </div>
+          <div class="image-info">
+            <p class="image-name">${image.name}</p>
+            <p class="image-size">${(image.file.size / (1024*1024)).toFixed(2)} MB</p>
+          </div>
+        </div>`;
+    });
+    this.imagePreview.appendChild(grid);
+  }
 
-        <div class="upload-info">
-          <p><strong>Formatos aceptados:</strong> JPG, PNG, WEBP</p>
-          <p><strong>Tamaño máximo:</strong> 5MB por imagen</p>
-          <p><strong>Cantidad máxima:</strong> 20 imágenes</p>
-        </div>
+  removeImage(index) {
+    this.selectedImages.splice(index, 1);
+    this.renderImagePreview();
+    this.updateUploadArea();
+  }
 
-        <!-- Preview de imágenes -->
-        <div id="imagePreview" class="image-preview"></div>
-      </div>
+  updateUploadArea() {
+    const content = this.uploadArea.querySelector('.upload-content h3');
+    content.textContent = this.selectedImages.length > 0 ? `${this.selectedImages.length} imagen(es) seleccionada(s)` : 'Arrastra las imágenes aquí';
+  }
 
-      <!-- Botones de Acción -->
-      <div class="form-actions">
-        <button type="button" id="clearBtn" class="btn-secondary">Limpiar Todo</button>
-        <button type="submit" class="btn-primary">Enviar Registro Fotográfico</button>
-      </div>
-    </form>
+  async handleSubmit(e) {
+    e.preventDefault();
+    const liderInput = document.getElementById('lider').value;
+    const zonaInput = document.getElementById('zona').value;
 
-    <!-- Modal de Confirmación -->
-    <div id="successModal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>¡Registro Exitoso!</h3>
-        </div>
-        <div class="modal-body">
-          <div class="success-icon">✅</div>
-          <p>Las imágenes han sido enviadas correctamente a la nube.</p>
-          <p>Gracias por compartir los momentos especiales del evento.</p>
-          <div id="folderLink" class="folder-link"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-primary" id="newForm">Nuevo Registro</button>
-        </div>
-      </div>
-    </div>
+    if (!liderInput || !zonaInput || this.selectedImages.length === 0) {
+      alert('Por favor complete líder, zona y suba al menos una imagen.');
+      return;
+    }
 
-    <!-- Modal de Carga -->
-    <div id="loadingModal" class="modal">
-      <div class="modal-content loading-content">
-        <div class="loading-spinner"></div>
-        <h3>Subiendo imágenes...</h3>
-        <p>Por favor espera, este proceso puede tardar dependiendo de tu internet.</p>
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <p id="progressText">Procesando...</p>
-      </div>
-    </div>
-  </div>
+    this.loadingModal.style.display = 'block';
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    
+    // ARREGLO: Envío individual de imágenes para evitar límites de tamaño
+    let subfolderId = null; 
 
-  <script src="Java/script.js"></script>
-</body>
-</html>
+    try {
+      for (let i = 0; i < this.selectedImages.length; i++) {
+        progressText.textContent = `Subiendo imagen ${i + 1} de ${this.selectedImages.length}...`;
+        const currentImage = this.selectedImages[i];
+        
+        // Paquete de datos liviano
+        const currentData = {
+          lider: liderInput,
+          zona: zonaInput,
+          currentImageIndex: i,
+          totalImages: this.selectedImages.length,
+          existingFolderId: subfolderId, // Pasar el ID de carpeta si ya se creó en el paso 1
+          image: {
+            data: currentImage.data,
+            type: currentImage.type,
+            name: currentImage.name
+          }
+        };
+
+        // Enviar con mode: 'cors' para intentar leer la respuesta si Google lo permite
+        // O text/plain y no-cors como fallback si los archivos son muy grandes y CORS preflight falla
+        const response = await fetch(this.SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors', // text/plain evita bloqueos CORS en archivos pesados
+          body: JSON.stringify(currentData)
+        });
+
+        // Actualizar barra de progreso (no podemos leer response.json con no-cors, asumimos éxito)
+        // NOTA: Con no-cors no podemos obtener el subfolderId del backend, así que 
+        // el backend tendrá que buscar o crear la carpeta cada vez basándose en el nombre de zona-líder.
+        // He ajustado el script de Apps Script (Backend 2.0 arriba) para que maneje esto.
+        
+        progressFill.style.width = ((i + 1) / this.selectedImages.length * 100) + '%';
+      }
+
+      progressText.textContent = '¡Finalizando registro!';
+      setTimeout(() => {
+        this.loadingModal.style.display = 'none';
+        this.successModal.style.display = 'block';
+      }, 1000);
+      
+    } catch (error) {
+      this.loadingModal.style.display = 'none';
+      console.error('Error al enviar:', error);
+      alert('Error al enviar las imágenes. Asegúrate de que las fotos no sean demasiado grandes y que tu conexión a internet sea estable. Intenta enviar menos imágenes a la vez para probar.');
+    }
+  }
+
+  clearAll() {
+    this.selectedImages = [];
+    this.renderImagePreview();
+    this.updateUploadArea();
+    this.imageInput.value = '';
+  }
+}
+
+let photoManager;
+document.addEventListener('DOMContentLoaded', () => { photoManager = new PhotoFormManager(); });
+</script>
